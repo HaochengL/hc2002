@@ -28,8 +28,8 @@ xlist_sub
 (xs: 'a xlist, i0: int): 'a = 
     case xs of 
         xlist_nil => raise XlistSubscript
-        | xlist_cons(x1,xs) => if i0<=0 then x1 else  xlist_sub(xs, i0-1) 
-        | xlist_snoc(xs,x1) => if i0<=0 then x1 else  xlist_sub(xs, i0-1) 
+        | xlist_cons(x1,xs) => if i0<=0 then x1 else if i0 > xlist_size(xs)-1 then raise XlistSubscript else  xlist_sub(xs, i0-1) 
+        | xlist_snoc(xs,x1) => if i0<=0 then x1 else if i0 > xlist_size(xs)-1 then raise XlistSubscript else  xlist_sub(xs, i0-1) 
         | xlist_append(x1,x2) => if i0<= 0 then xlist_sub(x1,0) else if i0 > xlist_size(x1) + xlist_size(x2)-1 then raise XlistSubscript else if i0 > xlist_size(x1)-1 then xlist_sub(x2,i0-xlist_size(x1)) else xlist_sub(x1,i0)
         | xlist_reverse(xs) => xlist_sub(xs, i0)
 
