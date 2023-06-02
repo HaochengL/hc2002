@@ -31,7 +31,7 @@ xlist_sub
         | xlist_cons(x1,xs) => if i0<=0 then x1 else  xlist_sub(xs, i0-1) 
         | xlist_snoc(xs,x1) => if i0<=0 then x1 else  xlist_sub(xs, i0-1) 
         | xlist_append(x1,x2) => if i0<= 0 then xlist_sub(x1,0) else if i0 > xlist_size(x1)-1 then xlist_sub(x2,i0-xlist_size(x1)) else xlist_sub(x1,i0)
-        | xlist_reverse(xs) => xlist_sub(xs, i0)
+        
 
 
 
