@@ -8,6 +8,11 @@ that is, it is shared by the class.
 *)
 (* ****** ****** *)
 
+val int_max = Int.max
+val int_min = Int.min
+
+(* ****** ****** *)
+
 type 'a optn = 'a option
 
 (* ****** ****** *)
@@ -261,8 +266,15 @@ val op@ = list_append
 fun
 list_fromto
 (start: int, finish: int): int list =
+let
+  fun
+  loop
+  (finish: int, res: int list): int list =
   if start < finish
-  then start :: list_fromto(start+1, finish) else []
+  then loop(finish-1, (finish-1) :: res) else res
+in
+  loop(finish, [(*nil*)])
+end
 
 (* ****** ****** *)
 
@@ -296,13 +308,16 @@ list_reverse
 (*
 This is an inefficient tail-recursive
 implementation of list_append as it traverses
-the first argument twice.
+the first argument TWICE.
 *)
 fun
 list_append
 ( xs: 'a list
 , ys: 'a list): 'a list =
-list_rappend(list_reverse(xs), ys)
+(
+  case ys of
+    nil => ys
+  | _ => list_rappend(list_reverse(xs), ys) )
 *)
 
 (* ****** ****** *)
