@@ -23,9 +23,29 @@ In particular, your implementation should guarantee:
   
 (* ****** ****** *)
 
-fun
-xlist_remove_reverse
-(xs: 'a xlist): 'a xlist = raise NotImplemented320
+fun xlist_remove_reverse(xs: 'a xlist): 'a xlist =
+  let
+    fun reverseHelper(xs: 'a xlist, acc: 'a xlist): 'a xlist =
+      case xs of
+        xlist_nil => acc
+      | xlist_cons(x1, xs) => reverseHelper(xs, xlist_cons(x1, acc))
+      | xlist_snoc(xs, x1) => reverseHelper(xs, xlist_snoc(acc, x1))
+      | xlist_append(xs1, xs2) => xlist_append(reverseHelper(xs2, acc), reverseHelper(xs1, xlist_nil))
+      | xlist_reverse(xs) => reverseHelper(xs, acc)
+
+    fun removeReverseHelper(xs: 'a xlist, acc: 'a xlist): 'a xlist =
+      case xs of
+        xlist_nil => acc
+      | xlist_cons(x1, xs) => xlist_cons(x1, removeReverseHelper(xs, acc))
+      | xlist_snoc(xs, x1) => removeReverseHelper(xs, xlist_snoc(acc, x1))
+      | xlist_append(xs1, xs2) => xlist_append(removeReverseHelper(xs1, acc), removeReverseHelper(xs2, acc))
+      | xlist_reverse(xs) => removeReverseHelper(reverseHelper(xs, xlist_nil), acc)
+
+  in
+    removeReverseHelper(xs, xlist_nil)
+  end
+
+
 					   
 (* ****** ****** *)
 
