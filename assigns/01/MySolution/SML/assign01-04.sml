@@ -57,10 +57,6 @@ fun str2int_opt(cs: string): int option =
 
 
 
-val result1 = str2int_opt("123")
-val result2 = str2int_opt("42")
-val result3 = str2int_opt("abc")
-
 
 
 						
