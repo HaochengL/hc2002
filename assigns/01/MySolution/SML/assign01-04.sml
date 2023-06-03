@@ -32,8 +32,8 @@ fun str2int_opt(cs: string): int option =
     fun isDigit(c: char): bool =
       Char.ord(c) >= Char.ord(#"0") andalso Char.ord(c) <= Char.ord(#"9")
 
-    fun helper(i: int, acc: int): int option =
-      if i >= String.size cs then SOME acc
+    fun helper(i: int, count: int): int option =
+      if i >= String.size(cs) then SOME count
       else
         let
           val c = String.sub(cs, i)
@@ -41,15 +41,15 @@ fun str2int_opt(cs: string): int option =
           if isDigit(c) then
             let
               val digit = Char.ord(c) - Char.ord(#"0")
-              val newAcc = acc * 10 + digit
+              val newCount = count * 10 + digit
             in
-              helper(i + 1, newAcc)
+              helper(i + 1, newCount)
             end
           else
             NONE
         end
   in
-    if String.size cs > 0 then
+    if String.size(cs) > 0 then
       helper(0, 0)
     else
       NONE
