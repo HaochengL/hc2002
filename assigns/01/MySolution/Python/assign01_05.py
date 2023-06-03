@@ -14,19 +14,13 @@ print("[import ./../assign01_lib.py] is done!")
 ####################################################
 
 def mylist_append(xs, ys):
-    """
-    Appends two lists, xs and ys, together.
-    """
     return xs + ys
 
 def mylist_rappend(xs, ys):
-    """
-    Appends two lists, xs and ys, together in reverse order.
-    """
-    return ys + xs
+    if len(xs) == 0:
+        return ys
+    else:
+        return mylist_rappend(xs[1:], [xs[0]]+ys)
 
 def mylist_reverse(xs):
-    """
-    Reverses the order of elements in a list, xs.
-    """
-    return xs[::-1]
+    return mylist_rappend(xs,[])
