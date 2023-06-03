@@ -4,7 +4,7 @@ sys.path.append('./../../MySolution/Python')
 from assign01_06 import *
 ####################################################
 print("[import ./../../MySolution/Python/assign01_06.py] is done!")
-####################################################
+###################################################
 xs = mylist_nil()
 xs = mylist_cons(2, xs)
 xs = mylist_cons(4, xs)
@@ -35,6 +35,7 @@ def mylist_sortedq(xs):
     # end-of-[if-then-else]
 # end-of-[def mylist_sortedq(xs)]
 ####################################################
+
 ys = mylist_quicksort(xs)
 assert(mylist_sortedq(ys))
 print("ys = ",end=''); mylist_print(ys); print();

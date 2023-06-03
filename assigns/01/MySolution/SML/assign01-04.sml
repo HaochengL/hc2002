@@ -27,12 +27,12 @@ fun str2int_opt(cs: string): int option
 
 (* ****** ****** *)
 
-fun str2int_opt(cs: string): int option =
+fun str2int_opt(cs: string): IntInf.int option =
   let
     fun isDigit(c: char): bool =
       Char.ord(c) >= Char.ord(#"0") andalso Char.ord(c) <= Char.ord(#"9")
 
-    fun helper(i: int, count: int): int option =
+    fun helper(i: int, count: IntInf.int): IntInf.int option =
       if i = String.size(cs) then SOME count
       else
         let
@@ -40,8 +40,8 @@ fun str2int_opt(cs: string): int option =
         in
           if isDigit(c) then
             let
-              val digit = Char.ord(c) - Char.ord(#"0")
-              val newCount = count * 10 + digit
+              val digit = IntInf.fromInt(Char.ord(c) - Char.ord(#"0"))
+              val newCount = IntInf.*(count, IntInf.fromInt(10)) + digit
             in
               helper(i + 1, newCount)
             end
@@ -50,17 +50,18 @@ fun str2int_opt(cs: string): int option =
         end
   in
     if String.size(cs) > 0 then
-      helper(0, 0)
+      helper(0, IntInf.fromInt(0))
     else
       NONE
   end
+
 
 val x1 = str2int_opt("12345")
 val x2 = str2int_opt("1 5")
 val x3 = str2int_opt("1")
 val x4 = str2int_opt(" ")
 val x5 = str2int_opt("1s")
-val x6 = str2int_opt("s1")
+val x6 = str2int_opt("00001123456789")
 
 
 						

@@ -174,5 +174,4 @@ case xs of
 end (* end-of-[list_mergesort]: let *)
 
 (* ****** ****** *)
-
 (* end of [CS320-2023-Sum1-assign01-lib.sml] *)
