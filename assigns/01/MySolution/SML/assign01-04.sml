@@ -27,8 +27,42 @@ fun str2int_opt(cs: string): int option
 
 (* ****** ****** *)
 
-fun
-str2int_opt(cs: string): int option = raise NotImplemented320
+fun str2int_opt(cs: string): int option =
+  let
+    fun isDigit(c: char): bool =
+      Char.ord(c) >= Char.ord(#"0") andalso Char.ord(c) <= Char.ord(#"9")
+
+    fun helper(i: int, acc: int): int option =
+      if i >= String.size cs then SOME acc
+      else
+        let
+          val c = String.sub(cs, i)
+        in
+          if isDigit(c) then
+            let
+              val digit = Char.ord(c) - Char.ord(#"0")
+              val newAcc = acc * 10 + digit
+            in
+              helper(i + 1, newAcc)
+            end
+          else
+            NONE
+        end
+  in
+    if String.size cs > 0 then
+      helper(0, 0)
+    else
+      NONE
+  end
+
+
+
+val result1 = str2int_opt("123")
+val result2 = str2int_opt("42")
+val result3 = str2int_opt("abc")
+
+
+
 						
 (* ****** ****** *)
 
