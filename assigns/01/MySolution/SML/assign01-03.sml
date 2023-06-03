@@ -23,32 +23,22 @@ In particular, your implementation should guarantee:
   
 (* ****** ****** *)
 
-fun xlist_remove_reverse(xs: 'a xlist): 'a xlist =
-  let
-    fun removeReverseHelper(xs: 'a xlist, acc: 'a xlist): 'a xlist =
-      case xs of
-        xlist_nil => acc
-      | xlist_cons(x1, xs) => xlist_cons(x1, removeReverseHelper(xs, acc))
-      | xlist_snoc(xs, x1) => removeReverseHelper(xs, xlist_snoc(acc, x1))
-      | xlist_append(xs1, xs2) =>
-          let
-            val ys1 = removeReverseHelper(xs1, xlist_nil)
-            val ys2 = removeReverseHelper(xs2, xlist_nil)
-          in
-            appendHelper(ys1, ys2, acc)
-          end
-      | xlist_reverse(xs) => removeReverseHelper(xs, acc)
+fun xlist_remove_reverse (xs: 'a xlist): 'a xlist =
+  case xs of
+    xlist_nil => xlist_nil
+  | xlist_cons (x1, xs') => xlist_cons (x1, xlist_remove_reverse xs')
+  | xlist_snoc (xs', x1) => xlist_snoc (xlist_remove_reverse xs', x1)
+  | xlist_append (xs1, xs2) =>
+      xlist_append (xlist_remove_reverse xs1, xlist_remove_reverse xs2)
+  | xlist_reverse xs' =>
+      case xs' of
+        xlist_nil => xlist_nil
+      | xlist_cons (x1, xs'') => xlist_snoc (xlist_remove_reverse xs'', x1)
+      | xlist_snoc (xs'', x1) => xlist_cons (x1, xlist_remove_reverse xs'')
+      | xlist_append (xs1, xs2) =>
+          xlist_append (xlist_remove_reverse xs2, xlist_remove_reverse xs1)
+      | xlist_reverse xs'' => xlist_remove_reverse xs''
 
-    and appendHelper(xs1: 'a xlist, xs2: 'a xlist, acc: 'a xlist): 'a xlist =
-      case xs1 of
-        xlist_nil => xs2
-      | xlist_cons(x1, xs) => xlist_cons(x1, appendHelper(xs, xs2, acc))
-      | xlist_snoc(xs, x1) => appendHelper(xs, xlist_snoc(acc, x1), acc)
-      | xlist_append(xs1', xs2') => appendHelper(xs1', xs2', appendHelper(xs2, acc, acc))
-      | xlist_reverse(xs) => appendHelper(xs, acc, acc)
-  in
-    removeReverseHelper(xs, xlist_nil)
-  end
 
 
 
