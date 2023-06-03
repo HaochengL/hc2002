@@ -33,7 +33,7 @@ fun str2int_opt(cs: string): int option =
       Char.ord(c) >= Char.ord(#"0") andalso Char.ord(c) <= Char.ord(#"9")
 
     fun helper(i: int, count: int): int option =
-      if i >= String.size(cs) then SOME count
+      if i = String.size(cs) then SOME count
       else
         let
           val c = String.sub(cs, i)
@@ -55,8 +55,12 @@ fun str2int_opt(cs: string): int option =
       NONE
   end
 
-
-
+val x1 = str2int_opt("12345")
+val x2 = str2int_opt("1 5")
+val x3 = str2int_opt("1")
+val x4 = str2int_opt(" ")
+val x5 = str2int_opt("1s")
+val x6 = str2int_opt("s1")
 
 
 						
