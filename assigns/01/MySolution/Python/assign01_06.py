@@ -2,6 +2,7 @@
 import sys
 sys.path.append('./../../')
 from assign01_lib import *
+from assign01_05 import *
 ####################################################
 print("[import ./../../assign01_lib.py] is done!")
 ####################################################
@@ -10,11 +11,7 @@ print("[import ./../../assign01_lib.py] is done!")
 # mylist_quicksort (see list_quicksort in assign01-lib.sml)
 #
 ####################################################
-def mylist_append(xs, ys):
-    if mylist_nilq(xs):
-        return ys
-    else:
-        return mylist_cons(xs.cons1, mylist_append(xs.cons2, ys))
+
     
 #def mylist_quicksort(xs):
  #   def qsort(xs):
