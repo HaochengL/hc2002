@@ -67,7 +67,12 @@ def mylist_make_list(xs):
     return res
 # end-of-[mylist_make_list]
     
-
+def mylist_append(xs, ys):
+    if mylist_nilq(xs):
+        return ys
+    elif mylist_consq(xs):
+        return mylist_cons(xs.get_cons1(), mylist_append(xs.get_cons2(), ys))
+    
 xs = [1,2,3,4,5]
 ys = mylist_make_list(xs)
 print("ys = ",end=''); mylist_print(ys); print();
