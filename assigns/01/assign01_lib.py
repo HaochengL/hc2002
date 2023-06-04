@@ -6,7 +6,6 @@
 
 # datatype 'a list =
 # nil | cons of ('a * 'a list)
-from assign01_05 import *
 
 class mylist:
     ctag = -1
@@ -67,6 +66,7 @@ def mylist_make_list(xs):
         res = mylist_cons(x1, res)
     return res
 # end-of-[mylist_make_list]
+
     
 xs = [1,2,3,4,5]
 ys = mylist_make_list(xs)
