@@ -2,7 +2,6 @@
 import sys
 sys.path.append('./../../')
 from assign01_lib import *
-from assign01_05 import *
 ####################################################
 print("[import ./../../assign01_lib.py] is done!")
 ####################################################
@@ -38,7 +37,12 @@ print("[import ./../../assign01_lib.py] is done!")
     #            return ys, mylist_cons(x1, zs)
     
    # return qsort(xs)
-   
+def mylist_append(xs, ys):
+    if mylist_nilq(xs):
+        return ys
+    elif mylist_consq(xs):
+        return mylist_cons(xs.get_cons1(), mylist_append(xs.get_cons2(), ys))
+    
 def mylist_quicksort(xs):
     def qsort(xs):
         if mylist_nilq(xs):
@@ -65,48 +69,6 @@ def mylist_quicksort(xs):
                 return ys, mylist_cons(x1, zs)
             
     return qsort(xs)
-
-xs = mylist_nil()
-xs = mylist_cons(2, xs)
-xs = mylist_cons(4, xs)
-xs = mylist_cons(3, xs)
-xs = mylist_cons(1, xs)
-xs = mylist_cons(3, xs)
-xs = mylist_cons(4, xs)
-xs = mylist_cons(2, xs)
-xs = mylist_cons(1, xs)
-xs = mylist_append(xs, xs)
-xs = mylist_append(xs, xs)
-
-print("xs = ", end='')
-mylist_print(xs)
-print()
-
-ys = mylist_quicksort(xs)
-print("ys = ", end='')
-mylist_print(ys)
-print()
-
-xs = mylist_nil()
-xs = mylist_cons(9, xs)
-xs = mylist_cons(8, xs)
-xs = mylist_cons(7, xs)
-xs = mylist_cons(6, xs)
-xs = mylist_cons(5, xs)
-xs = mylist_cons(4, xs)
-xs = mylist_cons(3, xs)
-xs = mylist_cons(2, xs)
-xs = mylist_append(xs, xs)
-xs = mylist_append(xs, xs)
-
-print("xs = ", end='')
-mylist_print(xs)
-print()
-
-ys = mylist_quicksort(xs)
-print("ys = ", end='')
-mylist_print(ys)
-print()
 
 
 
