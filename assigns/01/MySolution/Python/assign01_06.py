@@ -54,13 +54,13 @@ def mylist_quicksort(xs):
         
     def qpart(xs,p0):
         if mylist_nilq(xs):
-            return (mylist_nil(), mylist_nil())
+            return mylist_nil(), mylist_nil()
         else:
             x1 = xs.get_cons1()
             xs = xs.get_cons2()
             ys,zs = qpart(xs,p0)
-            if (x1<=p0):
-                return mylist_cons(x1, ys), mylist_cons(zs, mylist_nil())
+            if x1<=p0:
+                return mylist_cons(x1, ys), mylist_cons(zs  , mylist_nil())
             else:
                 return mylist_cons(ys, mylist_nil()), mylist_cons(x1, zs)
              
