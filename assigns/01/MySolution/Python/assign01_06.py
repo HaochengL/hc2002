@@ -10,11 +10,6 @@ print("[import ./../../assign01_lib.py] is done!")
 # mylist_quicksort (see list_quicksort in assign01-lib.sml)
 #
 ####################################################
-def mylist_append(xs, ys):
-    if mylist_nilq(xs):
-        return ys
-    else:
-        return mylist_cons(xs.cons1, mylist_append(xs.cons2, ys))
     
 def mylist_quicksort(xs):
     def qsort(xs):
@@ -41,24 +36,3 @@ def mylist_quicksort(xs):
                 return ys, mylist_cons(x1, zs)
     
     return qsort(xs)
-
-xs = mylist_nil()
-xs = mylist_cons(2, xs)
-xs = mylist_cons(4, xs)
-xs = mylist_cons(3, xs)
-xs = mylist_cons(1, xs)
-xs = mylist_cons(3, xs)
-xs = mylist_cons(4, xs)
-xs = mylist_cons(2, xs)
-xs = mylist_cons(1, xs)
-xs = mylist_append(xs, xs)
-xs = mylist_append(xs, xs)
-
-print("xs = ", end='')
-mylist_print(xs)
-print()
-
-ys = mylist_quicksort(xs)
-print("ys = ", end='')
-mylist_print(ys)
-print()
