@@ -43,7 +43,10 @@ fun str2int_opt(cs: string): int option =
               val digit = Char.ord(c) - Char.ord(#"0")
               val newCount = count * 10 + digit
             in
-              helper(i + 1, newCount)
+              if newCount < count then
+                NONE  (* Overflow occurred *)
+              else
+                helper(i + 1, newCount)
             end
           else
             NONE
@@ -59,8 +62,8 @@ val x1 = str2int_opt("12345")
 val x2 = str2int_opt("1 5")
 val x3 = str2int_opt("1")
 val x4 = str2int_opt(" ")
-val x5 = str2int_opt("1s")
-val x6 = str2int_opt("0123456789")
+val x5 = str2int_opt("~1234")
+
 
 
 						
