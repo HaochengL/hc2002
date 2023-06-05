@@ -50,7 +50,7 @@ def mylist_quicksort(xs):
             ys,zs = qpart(xs,x1)
             ys = qsort(ys)
             zs = qsort(zs)
-            return mylist_cons(mylist_cons(ys, mylist_cons(x1, mylist_nil())), zs)
+            return mylist_append(ys,mylist_cons(x1,zs))
         
     def qpart(xs,p0):
         if mylist_nilq(xs):
