@@ -62,12 +62,14 @@ def mylist_quicksort(xs):
                 return mylist_cons(x1, ys), zs
             else:
                 return ys, mylist_cons(x1, zs)
-            
+    
+    
+    def mylist_append(xs, ys):
+        if mylist_nilq(xs):
+            return ys
+        elif mylist_consq(xs):
+            return mylist_cons(xs.get_cons1(), mylist_append(xs.get_cons2(), ys))
+    
     return qsort(xs)
 
-def mylist_append(xs, ys):
-    if mylist_nilq(xs):
-        return ys
-    elif mylist_consq(xs):
-        return mylist_cons(xs.get_cons1(), mylist_append(xs.get_cons2(), ys))
 
