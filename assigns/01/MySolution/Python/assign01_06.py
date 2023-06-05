@@ -2,7 +2,6 @@
 import sys
 sys.path.append('./../../')
 from assign01_lib import *
-from assign01_05 import *
 ####################################################
 print("[import ./../../assign01_lib.py] is done!")
 ####################################################
