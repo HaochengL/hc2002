@@ -56,20 +56,15 @@ list_pairing
 
 fun list_pairing (xs: 'a list): ('a * 'a) list * 'a option =
   let
-    val size = list_length(xs)
     val ys = list_reverse(xs)
+    val lengthxs = list_length(xs)
 
-    fun even (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
-      if counter <> 0 then
-        case xs of
-          [] => []
-        | x1 :: xs =>
-            let
-              val (y1 :: ys) = ys
-            in
-              (x1, y1) :: even(xs, ys, counter - 2)
-            end
-      else []
+    fun lenopt (xs: 'a list, counter: int, index: int): 'a option =
+      case xs of
+        [] => NONE
+      | x1 :: xs =>
+          if counter = index then SOME(x1)
+          else lenopt(xs, counter + 1, index)
 
     fun odd (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
       if counter <> 0 then
@@ -83,18 +78,23 @@ fun list_pairing (xs: 'a list): ('a * 'a) list * 'a option =
             end
       else []
 
-    fun opt (xs: 'a list, counter: int, index: int): 'a option =
-      case xs of
-        [] => NONE
-      | x1 :: xs =>
-          if counter = index then SOME(x1)
-          else opt(xs, counter + 1, index)
+    fun even (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
+      if counter <> 0 then
+        case xs of
+          [] => []
+        | x1 :: xs =>
+            let
+              val (y1 :: ys) = ys
+            in
+              (x1, y1) :: even(xs, ys, counter - 2)
+            end
+      else []
 
   in
-    if size mod 2 = 1 then
-      (odd(xs, ys, size - 1), opt(xs, 0, size div 2))
+    if lengthxs mod 2 = 1 then
+      (odd(xs, ys, lengthxs - 1), lenopt(xs, 0, lengthxs div 2))
     else
-      (even(xs, ys, size), NONE)
+      (even(xs, ys, lengthxs), NONE)
   end
 
 
