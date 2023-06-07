@@ -55,3 +55,19 @@ val nxs = list_grouping(int1_map_list(N, fn i => N-i))
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-midterm1-list_grouping.sml] *)
+
+fun list_grouping(xs: int list): (int * int) list =
+  let
+    fun groupit([], count, occurtime) = occurtime
+      | groupit([x1], count, occurtime) =
+        (count, x1) :: occurtime
+      | groupit(x1::xs, count, occurtime) =
+        if x1 = list_head(xs) then
+          groupit(xs, count + 1, occurtime)
+        else
+          groupit(xs, 1, (count, x1) :: occurtime)
+  in
+    list_reverse(groupit(xs, 1, []))
+  end
+
+  
