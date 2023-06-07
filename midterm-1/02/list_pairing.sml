@@ -54,16 +54,21 @@ list_pairing
     pairing([], xs)
   end*)
 
-fun list_pairing(xs: 'a list): (('a * 'a) list * 'a option) =
-    let
-        fun helperpair(xs, accumulator, previous) =
-            case xs of
-                [] => (list_reverse(accumulator), previous)
-              | [x] => (list_reverse(accumulator), SOME x)
-              | x :: y :: ys => helperpair(ys, (x, y) :: accumulator, previous)
-    in
-        helperpair(xs, [], NONE)
-    end
+fun list_pairing(xs: 'a list): ('a * 'a) list * 'a option =
+  let
+    fun pairing(acc, []) = (acc, NONE)
+      | pairing(acc, [x]) = (acc, SOME x)
+      | pairing(acc, x1 :: rest) =
+          let
+            val x2 = list_last(rest)
+            val pairs = acc @ [(x1, x2)]
+            val (newPairs, middle) = pairing(pairs, list_reverse (list_tail((list_reverse(rest)))))
+          in
+            (newPairs, middle)
+          end
+  in
+    pairing([], xs)
+  end
 
 
 
