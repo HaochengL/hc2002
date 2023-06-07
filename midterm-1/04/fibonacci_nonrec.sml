@@ -22,3 +22,8 @@ fun fibonacci_nonrec(x: int): int = ...
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-midterm1-fibonacci.sml] *)
+
+fun fibonacci_nonrec(xs: int): int =
+    case xs of
+     0 => 0
+     | xs => #1 (int1_foldleft(xs, (0, 1), fn((a, b), _) => (b, a + b)))
