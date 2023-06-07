@@ -61,7 +61,7 @@ fun list_pairing (xs: 'a list): ('a * 'a) list * 'a option =
 
     fun lenopt (xs: 'a list, counter: int, index: int): 'a option =
       case xs of
-        [] => NONE
+        nil => NONE
       | x1 :: xs =>
           if counter = index then SOME(x1)
           else lenopt(xs, counter + 1, index)
@@ -69,7 +69,7 @@ fun list_pairing (xs: 'a list): ('a * 'a) list * 'a option =
     fun odd (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
       if counter <> 0 then
         case xs of
-          [] => []
+          nil => []
         | x1 :: xs =>
             let
               val (y1 :: ys) = ys
@@ -81,7 +81,7 @@ fun list_pairing (xs: 'a list): ('a * 'a) list * 'a option =
     fun even (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
       if counter <> 0 then
         case xs of
-          [] => []
+          nil => []
         | x1 :: xs =>
             let
               val (y1 :: ys) = ys
