@@ -25,15 +25,15 @@ fun list_factorials(n: int): int list = ...
 (* end of [CS320-2023-Sum1-midterm1-list_factorials.sml] *)
 fun list_factorials(n: int): int list =
     let
-        val len = if n > 1 then n - 1 else 0
+        val lenfact = if n > 1 then n - 1 else 0
         val begin = (1, [1]) 
-        val (_, facts) = int1_foldleft(len, begin, 
-            fn((prod, lst), _) => let val newFact = prod * length(lst) in (newFact, lst @ [newFact]) end)
+        val (_, currfact) = int1_foldleft(lenfact, begin, 
+            fn((prod, begin), _) => let val new = prod * list_length(begin) in (new, begin @ [new]) end)
     in
         case n of 
             0 => []
             |1 => [1]
-            |n => facts
+            |n => currfact
     end
 
 val d = list_factorials(1)
