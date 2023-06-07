@@ -54,21 +54,49 @@ list_pairing
     pairing([], xs)
   end*)
 
-fun list_pairing(xs: 'a list): ('a * 'a) list * 'a option =
+fun list_pairing (xs: 'a list): ('a * 'a) list * 'a option =
   let
-    fun pairing(acc, []) = (acc, NONE)
-      | pairing(acc, [x]) = (acc, SOME x)
-      | pairing(acc, x1 :: rest) =
-          let
-            val x2 = list_last(rest)
-            val pairs = acc @ [(x1, x2)]
-            val (newPairs, middle) = pairing(pairs, list_reverse (list_tail((list_reverse(rest)))))
-          in
-            (newPairs, middle)
-          end
+    val size = list_length(xs)
+    val ys = list_reverse(xs)
+
+    fun even (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
+      if counter <> 0 then
+        case xs of
+          [] => []
+        | x1 :: xs =>
+            let
+              val (y1 :: ys) = ys
+            in
+              (x1, y1) :: even(xs, ys, counter - 2)
+            end
+      else []
+
+    fun odd (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
+      if counter <> 0 then
+        case xs of
+          [] => []
+        | x1 :: xs =>
+            let
+              val (y1 :: ys) = ys
+            in
+              (x1, y1) :: odd(xs, ys, counter - 2)
+            end
+      else []
+
+    fun opt (xs: 'a list, counter: int, index: int): 'a option =
+      case xs of
+        [] => NONE
+      | x1 :: xs =>
+          if counter = index then SOME(x1)
+          else opt(xs, counter + 1, index)
+
   in
-    pairing([], xs)
+    if size mod 2 = 1 then
+      (odd(xs, ys, size - 1), opt(xs, 0, size div 2))
+    else
+      (even(xs, ys, size), NONE)
   end
+
 
 
 
