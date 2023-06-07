@@ -322,4 +322,332 @@ list_append
 
 (* ****** ****** *)
 
+fun
+list_forall
+( xs: 'a list
+, test: 'a -> bool): bool =
+(
+case xs of
+  nil => true
+| x1 :: xs =>
+  test(x1) andalso list_forall(xs, test)
+)
+
+fun
+list_exists
+( xs: 'a list
+, test: 'a -> bool): bool =
+(
+case xs of
+  nil => false
+| x1 :: xs =>
+  test(x1) orelse list_exists(xs, test)
+)
+
+(* ****** ****** *)
+
+fun
+list_foreach
+(xs: 'a list, work: 'a -> unit): unit =
+let
+val _ =
+list_forall
+(xs, fn(x1) => (work(x1); true)) in ()
+end
+
+(* ****** ****** *)
+
+fun
+list_forall
+(xs: 'a list, test: 'a -> bool): bool =
+let
+exception False
+in
+(
+list_foreach
+(xs,
+ fn(x1) =>
+ if test(x1)
+ then () else raise False); true)
+handle False => false
+end (* end-of-let: list_forall(xs, test) *)
+
+(* ****** ****** *)
+
+(*
+A Swiss army's knife for left-handed
+*)
+fun
+list_foldl
+( xs: 'a list
+, r0: 'r, fopr: 'r * 'a -> 'r): 'r =
+(
+case xs of
+  nil => r0
+| x1 :: xs => list_foldl(xs, fopr(r0, x1), fopr)
+)
+
+(* ****** ****** *)
+
+(*
+A Swiss army's knife for right-handed
+*)
+(*
+fun
+list_foldr
+( xs: 'a list
+, r0: 'r, fopr: 'a * 'r -> 'r): 'r =
+(
+case xs of
+  nil => r0
+| x1 :: xs => fopr(x1, list_foldr(xs, r0, fopr))
+)
+*)
+(*
+HX:
+This list_foldr implementation is tail-recursive!!!
+*)
+fun
+list_foldr
+( xs: 'a list
+, r0: 'r, fopr: 'a * 'r -> 'r): 'r =
+list_foldl
+(list_reverse(xs), r0, fn(r, x) => fopr(x, r))
+
+(* ****** ****** *)
+
+fun
+list_length
+(xs: 'a list): int =
+list_foldl(xs, 0, fn(r, x) => r + 1)
+
+(* ****** ****** *)
+(*
+fun
+list_extend
+(xs: 'a list, x0: 'a): 'a list =
+(
+case xs of
+  nil => [x0]
+| x1 :: xs => x1 :: list_extend(xs, x0)
+)
+*)
+fun
+list_extend
+(xs: 'a list, x0: 'a): 'a list =
+list_append(xs, [x0])
+
+fun
+list_append
+(xs: 'a list, ys: 'a list): 'a list =
+list_foldr(xs, ys, fn(x, r) => x :: r)
+
+fun
+list_rappend
+(xs: 'a list, ys: 'a list): 'a list =
+list_foldl(xs, ys, fn(r, x) => x :: r)
+
+(* ****** ****** *)
+
+fun
+list_map
+( xs: 'apple list
+, fopr: 'apple -> 'banana): 'banana list =
+list_foldr(xs, [], fn(x, r) => fopr(x) :: r)
+
+(* ****** ****** *)
+
+fun
+forall_to_foreach
+( forall
+: ('xs * ('x0 -> bool)) -> bool
+)
+: ('xs * ('x0 -> unit)) -> unit =
+fn(xs, work) =>
+(forall(xs, fn(x0) => (work(x0); true)); ())
+
+fun
+list_foreach(xs, work) =
+forall_to_foreach(list_forall)(xs, work)
+
+(* ****** ****** *)
+
+fun
+foreach_to_forall
+( foreach
+: ('xs * ('x0 -> unit)) -> unit
+)
+: ('xs * ('x0 -> bool)) -> bool =
+fn(xs: 'xs, test: 'x0 -> bool) =>
+let
+  exception False
+in(*let*)
+(* ****** ****** *)
+let
+val () =
+foreach
+(
+xs
+,
+fn(x0: 'x0) =>
+if
+test(x0) then () else raise False)
+in
+  ( true )
+end handle False(*void*) => (false)
+(* ****** ****** *)
+end (* end of [foreach_to_forall]: let *)
+
+fun
+list_forall(xs, test) =
+foreach_to_forall(list_foreach)(xs, test)
+
+(* ****** ****** *)
+
+fun
+foreach_to_foldleft
+( foreach
+: ('xs * ('x0 -> unit)) -> unit
+)
+: ('xs * 'r0 * ('r0*'x0 -> 'r0)) -> 'r0 =
+fn(xs, r0, fopr) =>
+let
+val res = ref(r0)
+in
+foreach
+( xs
+, fn(x0) => res := fopr(!res, x0)); !res
+end (* end of [foreach_to_foldleft]: let *)
+
+(* ****** ****** *)
+
+fun
+foldleft_to_length
+( foldleft
+: ('xs * int * (int*'x0 -> int)) -> int)
+: ('xs -> int) =
+fn(xs: 'xs) => foldleft(xs, 0, fn(r0,x0) => r0+1)
+
+(* ****** ****** *)
+
+fun
+foreach_to_length(foreach) =
+foldleft_to_length(foreach_to_foldleft(foreach))
+
+(* ****** ****** *)
+
+fun
+int0_foreach
+(n0: int, work: unit -> unit) =
+let
+fun
+  loop(i0: int): unit =
+  if i0 >= n0
+  then ()
+  else (work(); loop(i0+1)) in loop(0(*i0*))
+end (* end of [int0_foreach(n0, work)]: let *)
+
+(* ****** ****** *)
+(*
+HX: this is the same as the following Python loop:
+for x in range(n0):
+  work(x)
+*)
+fun
+int1_foreach
+(n0: int, work: int -> unit) =
+let
+fun
+loop(i0: int): unit =
+if i0 >= n0
+then ()
+else (work(i0); loop(i0+1)) in loop(0(*i0*))
+end (* end of [int1_foreach(n0, work)]: let *)
+
+(* ****** ****** *)
+
+val int1_forall = fn(xs, test) =>
+  foreach_to_forall(int1_foreach)(xs, test)
+
+(* ****** ****** *)
+
+val
+int1_foldleft =
+fn(xs,r0,fopr) =>
+foreach_to_foldleft(int1_foreach)(xs,r0,fopr)
+val
+int1_foldright =
+fn(xs,r0,fopr) =>
+int1_foldleft(xs, r0, fn(r0, x0) => fopr(xs-1-x0, r0))
+
+(* ****** ****** *)
+
+val
+list_foldleft =
+fn(xs, r0, fopr) =>
+foreach_to_foldleft(list_foreach)(xs,r0,fopr)
+val
+list_foldright =
+fn(xs, r0, fopr) =>
+foreach_to_foldleft(list_foreach)(xs,r0,fopr)
+
+(* ****** ****** *)
+
+fun
+string_foreach
+(xs: string, work: char -> unit): unit =
+int1_foreach
+(String.size(xs), fn(i) => work(String.sub(xs, i)))
+
+(* ****** ****** *)
+
+val
+string_foldleft =
+fn(xs, r0, fopr) =>
+foreach_to_foldleft(string_foreach)(xs,r0,fopr)
+val
+string_foldright =
+fn(xs, r0, fopr) =>
+foreach_to_foldleft(string_foreach)(xs,r0,fopr)
+
+(* ****** ****** *)
+
+fun
+list_labelize
+(xs: 'a list): (int * 'a) list =
+list_reverse
+(#2
+(
+list_foldl
+ (xs, (0, nil), fn((i, r), x) => (i+1, (i, x) :: r))
+)
+)
+
+(* ****** ****** *)
+
+fun
+list_zip
+(xs: 'a list, ys: 'b list): ('a * 'b) list =
+(
+case (xs, ys) of
+  (nil, _) => nil
+| (_, nil) => nil
+| (x1 :: xs, y1 :: ys) => (x1, y1) :: list_zip(xs, ys)
+)
+
+fun
+list_z2foreach
+( xs: 'a list
+, ys: 'b list
+, work: ('a * 'b) -> unit): unit =
+(
+case (xs, ys) of
+  (nil, _) => ()
+| (_, nil) => ()
+| (x1 :: xs, y1 :: ys) =>
+  (work(x1, y1); list_z2foreach(xs, ys, work))
+)
+
+(* ****** ****** *)
+
 (* end of [BUCASCS320-2023-Sum1-mysmlib-cls.sml] *)
