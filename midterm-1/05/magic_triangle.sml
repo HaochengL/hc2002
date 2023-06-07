@@ -72,3 +72,31 @@ magic_triangle(5) =
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-midterm1-magic_triangle.sml] *)
+
+fun magic_triangle(n: int) = 
+  let
+    fun nextrow(row: int list) = 
+      let
+        fun addpairs(xs, acc) =
+          case xs of
+          [] => list_reverse(1::acc)
+          | [x] => list_reverse (1::acc)
+          | x1::x2::xs => addpairs(x2::xs, (x1+x2)::acc)
+      in
+        addpairs(row, [1])
+      end
+
+    fun createrows(row: int list list, i: int) = 
+      if i <= n 
+      then 
+        let
+          val next_row = nextrow(list_head(list_reverse(row)))
+        in
+          createrows(row@[next_row], i+1)
+        end
+      else row
+  in
+    createrows([[1]], 1)
+  end
+
+val triangle = magic_triangle 5
