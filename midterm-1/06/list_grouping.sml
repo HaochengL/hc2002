@@ -132,9 +132,9 @@ let
             countHelper(xs, 1, x1)
         end
 
-    val sortedList = list_mergesort(xs)
+    val sorted = list_mergesort(xs)
 in
-    countConsecutive sortedList
+    countConsecutive(sorted)
 end
 
 
