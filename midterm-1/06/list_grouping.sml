@@ -124,10 +124,10 @@ let
     fun countConsecutive([]) = []
       | countConsecutive(x1::xs) =
         let
-            fun countHelper([], n, prev) = [(n, prev)]
-              | countHelper(x2::xs2, n, prev) =
-                if x2 = prev then countHelper(xs2, n + 1, x2)
-                else (n, prev) :: countHelper(xs2, 1, x2)
+            fun countHelper([], n, pre) = [(n, pre)]
+              | countHelper(x2::xs2, n, pre) =
+                if x2 = pre then countHelper(xs2, n + 1, x2)
+                else (n, pre) :: countHelper(xs2, 1, x2)
         in
             countHelper(xs, 1, x1)
         end
