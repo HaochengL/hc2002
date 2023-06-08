@@ -33,3 +33,16 @@ end
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-assign02-05.sml] *)
+
+fun isPrime(n: int): bool =
+  if n < 2 then
+    false
+  else
+    let
+      val range = list_fromto(2, n - 1)
+      val divisible = list_exists(range, fn(x) => n mod x = 0)
+    in
+      not divisible
+    end
+
+val boo = isPrime(0)
