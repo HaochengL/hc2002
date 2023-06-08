@@ -22,3 +22,7 @@ fun list_range(start: int, finish: int): int list
 (* ****** ****** *)
 
 (* end of [CS320-2023-Spring-assign03-02.sml] *)
+
+fun list_range(start: int, finish: int): int list = 
+    if start >= finish then []
+    else list_fromto(start,finish)

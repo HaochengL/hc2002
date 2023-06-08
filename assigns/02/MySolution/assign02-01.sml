@@ -15,6 +15,17 @@ the following sequence:
 fun
 find_root(f0: int -> int): int = ...
 *)
+fun find_root(f0: int -> int): int =
+    let
+        fun helper i =
+            if f0 i = 0 then i
+            else if f0 (~i) = 0 then ~i
+            else helper (i+1)
+    in
+        helper 0
+    end;
+
+
 
 (* ****** ****** *)
 
