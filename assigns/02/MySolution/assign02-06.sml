@@ -39,3 +39,6 @@ fn(xs: 'a list) => ...
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-assign02-06.sml] *)
+
+fun list_subsets (xs: 'a list) : 'a list list = 
+  foldl (fn (x, res) => res @ list_map (res, fn(xs) => x :: xs)) [[]] xs
