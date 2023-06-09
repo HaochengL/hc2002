@@ -15,50 +15,50 @@ fun list_longest_ascend(xs: int list): int list
 
 (* ****** ****** *)
 
-(* end of [CS320-2023-Sum1-assign02-04.sml] *)
+
+fun helper(xs: int list): int list = 
+    case xs of
+        [] => []  
+      | [x] => [x]  
+      | x1::x2::xs =>
+            if x2 >= x1 then x1::helper(x2::xs) 
+            else helper(x1::xs)
+
 fun list_longest_ascend(xs: int list): int list =
   let
-    fun helper([], _, longest, current) =
-      if list_length(current) > list_length(longest)
+    fun longest_helper([], x1, longest, current, first) =
+      if list_length(first) = list_length(current) then first
+      else if list_length(current) > list_length(longest)
       then current
       else longest
-      | helper(x::xs', prev, longest, current) =
-      if x >= prev
+      | longest_helper(x1::xs, previous, longest, current, first) =
+      if x1 >= previous
       then
         let
-          val longest_cont = helper(xs', x, longest, list_append(current,[x]))
-          val longest_skip = helper(xs', prev, longest, current)
+          val use = longest_helper(xs, x1, longest, list_append(current,[x1]), first)
+          val skip = longest_helper(xs, previous, longest, current, first)
         in
-          if list_length(longest_cont) >= list_length(longest_skip)
-          then longest_cont
-          else longest_skip
+          if list_length(use) >= list_length(skip)
+          then use
+          else skip
         end
       else
         let
-          val longest_skip = helper(xs', x, longest, [x])
+          val skip = longest_helper(xs, x1, longest, [x1], first)
         in
-          if list_length(longest_skip) > list_length(current)
-          then longest_skip
-          else helper(xs', prev, longest, current)
+          if list_length(skip) > list_length(current)
+          then skip
+          else longest_helper(xs, previous, longest, current, first)
         end
-  in
-    case xs of
-      [] => []
-    | x::xs' => helper(xs', x, [], [x])
+  in 
+    let
+      val first = helper(xs)
+    in
+      case xs of
+        [] => []
+      | x1::xs => longest_helper(xs, x1, [], [x1], first)
+    end
   end
 
 
-
-
-
-
-
-
-
-val l1st = list_longest_ascend([1,2,3,4,5])
-val l2st = list_longest_ascend([5,4,3,2,1])
-val l3st = list_longest_ascend([2, 1, 3, 3, 4, 4, 5])
-val l4st = list_longest_ascend([2, 1, 1, 3, 3, 2, 4, 4, 5])
-val l5st = list_longest_ascend([2, 1, 2, 1, 3, 3, 2, 2, 4, 3, 4, 5, 3, 5])
-val l6st = list_longest_ascend([4, 1, 2, 1, 3, 8, 9, 5, 6, 7, 1, 1, 1, 1, 1, 1, 1])
-val l7st = list_longest_ascend([1,1,1,3,2,3,4,5,6,7,1,1])
+val l1st = list_longest_ascend([2, 1, 3, 3, 4, 4, 5])
