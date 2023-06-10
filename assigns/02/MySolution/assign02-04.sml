@@ -54,7 +54,7 @@ fun list_longest_ascend(xs: int list): int list =
           in
             if list_length(keep) > list_length(drop) then keep
             else if list_length(keep) < list_length(drop) then drop
-            else if find_index(list_head(drop), original) <= find_index(list_head(keep), original) then drop
+            else if list_length(keep) = list_length(drop) andalso find_index(list_head(drop), original) <= find_index(list_head(keep), original) then drop
             else keep
           end
         else
