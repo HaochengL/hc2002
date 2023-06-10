@@ -18,100 +18,70 @@ fun list_longest_ascend(xs: int list): int list
 (* end of [CS320-2023-Sum1-assign02-04.sml] *)
 
 
+fun insert(res, x1) =
+    case list_reverse res of
+        [] => [x1]
+      | y::ys =>
+        if x1 >= y then res @ [x1]
+        else insert(list_reverse(ys), x1)
+
 fun find_index(x: int, xs: int list): int =
   let
     fun helper(y, i, []) = ~1
-      | helper(y, i, z::zs) = if z = y then i+1 else helper(y, i+1, zs)
+      | helper(y, i, z::zs) = if z = y then i else helper(y, i+1, zs)
   in
     helper(x, 0, xs)
   end
 
-fun longest_helper([], x1, longest, current, origin) =
-      if list_length(current) > list_length(longest)
-      then current
-      else if list_length(current) = list_length(longest)
-      then (if find_index(list_head(longest), origin) <= find_index(list_head(current), origin)
-            then longest
-            else current)
-      else longest
-      | longest_helper(x1::xs, previous, longest, current, origin) =
-      if x1 >= previous
-      then
-        let
-          val use = longest_helper(xs, x1, longest, list_append(current, [x1]), origin)
-          val skip = longest_helper(xs, previous, longest, current, origin)
-        in
-          if list_length(use) >= list_length(skip)
-          then use
-          else skip
-        end
-      else
-        let
-          val skip = longest_helper(xs, x1, longest, [x1], origin)
-        in
-          if list_length(skip) > list_length(current)
-          then skip
-          else if list_length(skip) = list_length(current)
-          then (if find_index(list_head(skip), origin) <= find_index(list_head(current), origin)
-            then skip
-            else current)
-          else longest_helper(xs, previous, longest, current, origin)
-        end
-
-
 fun list_longest_ascend(xs: int list): int list =
-    let
-      val origin = xs
+  let
+    fun helper(low,xs,res,prev,original) = 
+    case xs of 
+    [] => res
+    | x1::xs1 =>
+    if x1 >= prev
+    then
+    let 
+
+        val keep = helper(low,xs1,list_append(res,[x1]),x1,original)
+        val drop = helper(low,xs1,res,list_last(res),original)
+
     in
-      case xs of
-        [] => []
-      | x1::xs => longest_helper(xs, x1, [], [x1], origin)
+        if list_length(keep) > list_length(drop)
+        then keep
+        else drop
     end
 
-val l1st = list_longest_ascend([2, 1, 3, 3, 4, 4, 5])
+    else 
+        if x1 < low
+        then
+        let
+            val keep = helper(x1,xs1,[x1],x1,original)
+            val drop = helper(low,xs1,res,list_last(res),original)
+        in
+            if list_length(keep) > list_length(drop) then keep
+            else if list_length(keep) < list_length(drop) then drop
+            else if list_length(keep) = list_length(drop) andalso find_index(list_head(keep),original) <= find_index(list_head(drop),original) then keep
+            else drop
+        end
 
+        else 
+        let
+            val inserted = insert(res,x1)
+            val keep = helper(low,xs1, inserted, list_last(inserted),original)
+            val drop = helper(low,xs1,res,list_last(res),original)
 
-
-
-
-fun count_occurrences (x, []) = 0
-  | count_occurrences (x, y::ys) =
-    if x = y then 1 + count_occurrences (x, ys)
-    else count_occurrences (x, ys)
-
-fun replicate (n, x) =
-    if n <= 0 then []
-    else x :: replicate (n-1, x)
-
-fun check(new: int list, xs: int list, original: int list): int list =
-  if new = [] then []
-  else if list_head(new) = list_last(new)
-    then replicate(count_occurrences(list_head(new), original), list_head(new))
-  else new
-
-
-fun current(xs: int list, original: int list): int list =
-  let
-    fun helper([], longest, original) = longest
-      | helper(x::xs', [], original) = helper(xs', [x], original)
-      | helper(x::xs', longest as last::_, original) =
-          if x >= last
-          then helper(xs', x::longest, original)
-          else helper(xs', longest, original)
+        in
+            if list_length(keep) > list_length(drop)
+            then keep
+            else if list_length(keep) < list_length(drop)
+            then drop
+            else keep
+        end
   in
-    
-    check(list_reverse(helper(xs, [], original)), xs, original)
-
+    case xs of
+      [] => []
+    | x1::xs1 => helper(x1,xs1,[x1],x1,xs)
   end
 
-fun list_longest_ascend(xs: int list): int list =
-  let
-    fun compare([], longest,original) = current(longest,original)
-      | compare(x::xs1, [], original) = compare(xs1, x::xs1, original)
-      | compare(x::xs1, longest, original) =
-          if list_length(current(longest, original)) >= list_length(current(x::xs1, original))
-          then compare(xs1, longest, original)
-          else compare(xs1, x::xs1, original)
-  in
-    compare(xs,[], xs)
-  end
+val l1st = list_longest_ascend([9, 2, 1, 3, 3, 4, 4, 5])
