@@ -41,7 +41,7 @@ fun list_longest_ascend(xs: int list): int list =
       | x1::xs1 =>
         if x1 >= prev then
           let 
-            val keep = helper(low, xs1, res @ [x1], x1, original)
+            val keep = helper(low, xs1, list_append(res,[x1]) , x1, original)
             val drop = helper(low, xs1, res, list_last(res), original)
           in
             if list_length(keep) >= list_length(drop) then keep
@@ -73,4 +73,4 @@ fun list_longest_ascend(xs: int list): int list =
   end
 
 
-val l1st = list_longest_ascend([2, 1, 2, 1, 3, 3, 2, 2, 4, 3, 4, 5, 3, 5])
+val l1st = list_longest_ascend([~2, 1, 2, 1, 3, 3, 2, 2, 4, 3, 4, 5, 3, 5])
