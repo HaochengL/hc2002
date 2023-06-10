@@ -42,19 +42,23 @@ fn(xs: 'a list) => ...
 
 fun list_subsets(xs: 'a list): 'a list list =
     let
-        fun subsetsHelper([], acc) = acc
-        | subsetsHelper(x::xs, acc) =
+        fun subsets([], acc) = acc
+        | subsets(x::xs, acc) =
             let
-                val subsets = list_subsets(xs)
-                fun prependSubset(subset) = x::subset
+                val subsets = subsets(xs, acc)
+                val subsetsWithPrepend = mapWithAcc(subsets, fn (subset, res) => (x :: subset) :: res, [])
             in
-                let
-                    val subsetsWithPrepend = list_map(subsets, prependSubset)
-                in
-                    acc @ subsets @ subsetsWithPrepend
-                end
+                subsets @ subsetsWithPrepend
+            end
+
+        and mapWithAcc([], _, acc) = acc
+        | mapWithAcc(x::xs, f, acc) =
+            let
+                val result = f(x, acc)
+            in
+                mapWithAcc(xs, f, result)
             end
     in
-        subsetsHelper(xs, [[]])
+        subsets(xs, [[]])
     end
 
