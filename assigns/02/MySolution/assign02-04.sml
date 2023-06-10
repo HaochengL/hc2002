@@ -42,28 +42,28 @@ fun list_longest_ascend(xs: int list): int list =
         if x1 >= prev then
           let 
             val keep = helper(low, xs1, res @ [x1], x1, original)
-            val drop = helper(low, xs1, res, List.last res, original)
+            val drop = helper(low, xs1, res, list_last(res), original)
           in
-            if length keep >= length drop then keep
+            if list_length(keep) >= list_length(drop) then keep
             else drop
           end
         else if x1 < low then
           let
             val keep = helper(x1, xs1, [x1], x1, original)
-            val drop = helper(low, xs1, res, List.last res, original)
+            val drop = helper(low, xs1, res, list_last(res), original)
           in
-            if length keep > length drop then keep
-            else if length keep < length drop then drop
-            else if find_index(x1, original) > find_index(List.hd keep, original) then keep
-            else drop
+            if list_length(keep) > list_length(drop) then keep
+            else if list_length(keep) < list_length(drop) then drop
+            else if find_index(list_head(drop), original) <= find_index(list_head(keep), original) then drop
+            else keep
           end
         else
           let
             val inserted = insert(res, x1)
-            val keep = helper(low, xs1, inserted, List.last inserted, original)
-            val drop = helper(low, xs1, res, List.last res, original)
+            val keep = helper(low, xs1, inserted, list_last(inserted), original)
+            val drop = helper(low, xs1, res, list_last(res), original)
           in
-            if length keep > length drop then keep
+            if list_length(keep) > list_length(drop) then keep
             else drop
           end
   in
