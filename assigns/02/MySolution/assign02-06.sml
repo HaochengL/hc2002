@@ -40,5 +40,21 @@ fn(xs: 'a list) => ...
 
 (* end of [CS320-2023-Sum1-assign02-06.sml] *)
 
-fun list_subsets (xs: 'a list) : 'a list list = 
-  foldl (fn (x, res) => res @ list_map (res, fn(xs) => x :: xs)) [[]] xs
+fun list_subsets(xs: 'a list): 'a list list =
+    let
+        fun subsetsHelper([], acc) = acc
+        | subsetsHelper(x::xs, acc) =
+            let
+                val subsets = list_subsets(xs)
+                fun prependSubset(subset) = x::subset
+            in
+                let
+                    val subsetsWithPrepend = list_map(subsets, prependSubset)
+                in
+                    acc @ subsets @ subsetsWithPrepend
+                end
+            end
+    in
+        subsetsHelper(xs, [[]])
+    end
+
