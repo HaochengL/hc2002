@@ -46,7 +46,18 @@ forall_to_exists
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-assign02-07.sml] *)
-fun
-forall_to_exists
-(forall: ('xs,'x0)forall_t): ('xs,'x0)exists_t =
-(fn(xs, p) => not (forall(xs, (fn x => not (p x)))))
+fun forall_to_exists(forall: ('xs, 'x0) forall_t): ('xs, 'x0) exists_t =
+    let
+        fun exists(xs, p) =
+            let
+                fun checkExists([], _) = false
+                | checkExists(x :: xs, pred) =
+                    if pred x then true
+                    else checkExists(xs, pred)
+            in
+                not (forall(xs, fn x => not (p x)))
+            end
+    in
+        exists
+    end
+
