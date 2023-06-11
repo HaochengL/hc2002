@@ -46,17 +46,17 @@ fun list_subsets(xs: 'a list): 'a list list =
         | subsets(x::xs, acc) =
             let
                 val subsets = subsets(xs, acc)
-                val subsetsWithPrepend = mapWithAcc(subsets, fn (subset, res) => (x :: subset) :: res, [])
+                val subsetsprepend = mapacc(subsets, fn (subset, res) => (x :: subset) :: res, [])
             in
-                subsets @ subsetsWithPrepend
+                subsets @ subsetsprepend
             end
 
-        and mapWithAcc([], _, acc) = acc
-        | mapWithAcc(x::xs, f, acc) =
+        and mapacc([], _, acc) = acc
+        | mapacc(x::xs, f, acc) =
             let
                 val result = f(x, acc)
             in
-                mapWithAcc(xs, f, result)
+                mapacc(xs, f, result)
             end
     in
         subsets(xs, [[]])
