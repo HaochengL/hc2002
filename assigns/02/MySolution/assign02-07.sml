@@ -50,11 +50,11 @@ fun forall_to_exists(forall: ('xs, 'x0) forall_t): ('xs, 'x0) exists_t =
     let
         fun exists(xs, p) =
             let
-                fun checkExists([], _) = false
-                    | checkExists(x::xs, pred) =
+                fun checkexists([], _) = false
+                    | checkexists(x::xs, pred) =
                         case pred(x) of
                         true => true
-                        |false => checkExists(xs, pred)
+                        |false => checkexists(xs, pred)
             in
                 not (forall(xs, fn x => not (p x)))
             end
