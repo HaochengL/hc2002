@@ -17,60 +17,29 @@ fun list_longest_ascend(xs: int list): int list
 
 (* end of [CS320-2023-Sum1-assign02-04.sml] *)
 
+fun find_longest (prev: int, nil) : int list = []
+  | find_longest (prev, x1::xs) : int list =
+      if x1 >= prev
+      then x1 :: find_longest (prev, xs)
+      else find_longest (prev, xs)
 
-fun insert(res, x1) =
-    case list_reverse res of
-        [] => [x1]
-      | y::ys =>
-        if x1 >= y then res @ [x1]
-        else insert(list_reverse(ys), x1)
 
-fun find_index(x: int, xs: int list): int =
-  let
-    fun helper(y, i, []) = ~1
-      | helper(y, i, z::zs) = if z = y then i else helper(y, i+1, zs)
-  in
-    helper(x, 0, xs)
-  end
-
-fun list_longest_ascend(xs: int list): int list =
-  let
-    fun helper(low, xs, res, prev, original) = 
-      case xs of 
-        [] => res
-      | x1::xs1 =>
-        if x1 >= prev then
-          let 
-            val keep = helper(low, xs1, list_append(res,[x1]) , x1, original)
-            val drop = helper(low, xs1, res, list_last(res), original)
-          in
-            if list_length(keep) >= list_length(drop) then keep
-            else drop
-          end
-        else if x1 < low then
-          let
-            val keep = helper(x1, xs1, [x1], x1, original)
-            val drop = helper(low, xs1, res, list_last(res), original)
-          in
-            if list_length(keep) > list_length(drop) then keep
-            else if list_length(keep) < list_length(drop) then drop
-            else if list_length(keep) = list_length(drop) andalso find_index(list_head(drop), original) <= find_index(list_head(keep), original) then drop
-            else keep
-          end
-        else
-          let
-            val inserted = insert(res, x1)
-            val keep = helper(low, xs1, inserted, list_last(inserted), original)
-            val drop = helper(low, xs1, res, list_last(res), original)
-          in
-            if list_length(keep) > list_length(drop) then keep
-            else drop
-          end
-  in
+fun list_longest_ascend (xs: int list) : int list =
     case xs of
-      [] => []
-    | x1::xs1 => helper(x1, xs1, [x1], x1, xs)
-  end
+        nil => []
+      | x1::xs =>
+        let
+          val current = x1 :: list_longest_ascend (find_longest (x1, xs))
+          val remain = list_longest_ascend(xs)
+        in
+          if list_length(current) >= list_length(remain)
+          then current
+          else remain
+        end
 
 
-val l1st = list_longest_ascend([~2, 1, 2, 1, 3, 3, 2, 2, 4, 3, 4, 5, 3, 5])
+
+
+val e = [2, 1, 2, 1, 3, 3, 2, 2, 4, 3, 4, 5, 3, 5]
+
+val myans7 = list_longest_ascend e
