@@ -56,7 +56,7 @@ fun forall_to_exists(forall: ('xs, 'x0) forall_t): ('xs, 'x0) exists_t =
                         true => true
                         |false => checkexists(xs, pred)
             in
-                not (forall(xs, fn x => not (p x)))
+                forall(xs, fn x => not (p x)) = false
             end
     in
         exists
