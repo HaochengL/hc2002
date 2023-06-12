@@ -42,7 +42,7 @@ fun isPrime(n: int): bool =
       val range = list_fromto(2, n - 1)
       val divisible = list_exists(range, fn(x) => n mod x = 0)
     in
-      not divisible
+      divisible = false
     end
 
 val boo = isPrime(0)
