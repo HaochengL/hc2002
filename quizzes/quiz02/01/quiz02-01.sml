@@ -58,25 +58,22 @@ fn(word: string) => ...
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-quizzes-quiz02-01.sml] *)
-
-fun
-quiz02_01
-(word: string): char -> int =
-
+fun quiz02_01(word: string): char -> int =
   let
     val charCount = strlen(word)
-  in
-    fn (ch: char) =>
+
+    fun countChar(ch: char): int =
       let
-        fun cc(count: int, i: int): int =
-          if i < charCount then
-            if strsub(word, i) = ch then cc(count + 1, i + 1)
-            else cc(count, i + 1)
-          else count
+        val count = ref 0
       in
-        cc(0, 0)
+        string_foreach(word, fn c => if c = ch then count := !count + 1 else ()); !count
       end
+  in
+    countChar
   end
+
+
+
 
 
 
