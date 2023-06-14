@@ -32,6 +32,18 @@ exception NotImplemented320
 
 (* ****** ****** *)
 
+type
+('xs, 'x0) foreach_t =
+'xs * ('x0 -> unit) -> unit
+type
+('xs, 'x0) iforeach_t =
+'xs * (int * 'x0 -> unit) -> unit
+type
+('xs, 'x0, 'r0) ifoldleft_t =
+'xs * 'r0 * ('r0 * int * 'x0 -> 'r0) -> 'r0
+
+(* ****** ****** *)
+
 fun
 assert320
 (claim: bool): unit =
@@ -349,14 +361,15 @@ case xs of
 fun
 list_foreach
 (xs: 'a list, work: 'a -> unit): unit =
-let
-val _ =
-list_forall
-(xs, fn(x1) => (work(x1); true)) in ()
-end
+(
+case xs of
+  nil => ()
+| (x1::xs) => (work(x1); list_foreach(xs, work))
+)
 
 (* ****** ****** *)
 
+(*
 fun
 list_forall
 (xs: 'a list, test: 'a -> bool): bool =
@@ -371,6 +384,7 @@ list_foreach
  then () else raise False); true)
 handle False => false
 end (* end-of-let: list_forall(xs, test) *)
+*)
 
 (* ****** ****** *)
 
@@ -451,9 +465,18 @@ list_foldl(xs, ys, fn(r, x) => x :: r)
 
 fun
 list_map
-( xs: 'apple list
-, fopr: 'apple -> 'banana): 'banana list =
+( xs: 'a list
+, fopr: 'a -> 'b): 'b list =
 list_foldr(xs, [], fn(x, r) => fopr(x) :: r)
+
+(* ****** ****** *)
+
+fun
+list_filter
+(xs: 'a list, test: 'a -> bool): 'a list =
+list_foldr
+( xs, []
+, fn(x1, res) => if test(x1) then x1 :: res else res)
 
 (* ****** ****** *)
 
@@ -465,10 +488,6 @@ forall_to_foreach
 : ('xs * ('x0 -> unit)) -> unit =
 fn(xs, work) =>
 (forall(xs, fn(x0) => (work(x0); true)); ())
-
-fun
-list_foreach(xs, work) =
-forall_to_foreach(list_forall)(xs, work)
 
 (* ****** ****** *)
 
@@ -497,10 +516,6 @@ in
 end handle False(*void*) => (false)
 (* ****** ****** *)
 end (* end of [foreach_to_forall]: let *)
-
-fun
-list_forall(xs, test) =
-foreach_to_forall(list_foreach)(xs, test)
 
 (* ****** ****** *)
 
@@ -533,6 +548,90 @@ fn(xs: 'xs) => foldleft(xs, 0, fn(r0,x0) => r0+1)
 fun
 foreach_to_length(foreach) =
 foldleft_to_length(foreach_to_foldleft(foreach))
+
+(* ****** ****** *)
+
+fun
+foreach_to_get_at
+(
+foreach:
+('xs*('x0->unit))->unit): 'xs*int -> 'x0 =
+fn(xs, i0) =>
+let
+exception Found of ('x0)
+val foldleft = foreach_to_foldleft(foreach)
+in (*let*)
+(* ****** ****** *)
+let
+val r0 =
+foldleft
+( xs, 0
+, fn(r0, x0) =>
+  if i0 = r0 then
+  raise Found(x0) else r0+1) in raise Subscript
+end handle Found(x0) => x0
+(* ****** ****** *)
+end (* end-of-[foreach_to_get_at]: let *) 
+
+(* ****** ****** *)
+
+fun
+foreach_to_listize
+(
+foreach:
+('xs*('x0->unit))->unit): 'xs -> 'x0 list =
+(
+fn(xs) =>
+list_reverse
+(
+foreach_to_foldleft
+(foreach)(xs, nil, fn(r0, x0) => x0 :: r0)))
+
+(* ****** ****** *)
+
+fun
+foreach_to_rlistize
+(
+foreach:
+('xs*('x0->unit))->unit): 'xs -> 'x0 list =
+fn(xs) =>
+(foreach_to_foldleft
+ (foreach)(xs, nil, fn(r0, x0) => x0 :: r0))
+
+(* ****** ****** *)
+
+fun
+foreach_to_map_list
+(
+foreach:
+('xs * ('x0->unit))->unit)
+:
+('xs * ('x0 -> 'y0)) -> 'y0 list
+=
+(
+fn(xs, fopr) =>
+list_reverse
+(
+foreach_to_foldleft
+(foreach)(xs, nil, fn(r0, x0) => fopr(x0) :: r0)))
+
+(* ****** ****** *)
+
+fun
+foreach_to_filter_list
+(
+foreach:
+('xs * ('x0->unit))->unit)
+:
+('xs * ('x0 -> bool)) -> 'x0 list
+=
+(
+fn(xs, test) =>
+list_reverse
+(
+foreach_to_foldleft(foreach)
+( xs, nil
+, fn(r0, x0) => if test(x0) then x0 :: r0 else r0)))
 
 (* ****** ****** *)
 
@@ -582,6 +681,12 @@ int1_foldleft(xs, r0, fn(r0, x0) => fopr(xs-1-x0, r0))
 
 (* ****** ****** *)
 
+fun
+list_forall(xs, test) =
+foreach_to_forall(list_foreach)(xs, test)
+
+(* ****** ****** *)
+
 val
 list_foldleft =
 fn(xs, r0, fopr) =>
@@ -589,7 +694,8 @@ foreach_to_foldleft(list_foreach)(xs,r0,fopr)
 val
 list_foldright =
 fn(xs, r0, fopr) =>
-foreach_to_foldleft(list_foreach)(xs,r0,fopr)
+list_foldleft
+(list_reverse(xs), r0, fn(r, x) => fopr(x, r))
 
 (* ****** ****** *)
 
@@ -622,18 +728,33 @@ list_foldl
  (xs, (0, nil), fn((i, r), x) => (i+1, (i, x) :: r))
 )
 )
+val list_enumerate = list_labelize
 
 (* ****** ****** *)
 
 fun
-list_zip
+foreach_to_iforeach
+( foreach
+: ('xs, 'x0) foreach_t): ('xs, 'x0) iforeach_t =
+fn(xs, iwork) =>
+let
+val _ =
+foreach_to_foldleft(foreach)
+(xs, 0, fn(p, x) => (iwork(p, x); p+1)) in () end
+
+(* ****** ****** *)
+
+fun
+list_zip2
 (xs: 'a list, ys: 'b list): ('a * 'b) list =
 (
 case (xs, ys) of
   (nil, _) => nil
 | (_, nil) => nil
-| (x1 :: xs, y1 :: ys) => (x1, y1) :: list_zip(xs, ys)
+| (x1 :: xs, y1 :: ys) => (x1, y1) :: list_zip2(xs, ys)
 )
+
+(* ****** ****** *)
 
 fun
 list_z2foreach
@@ -647,6 +768,78 @@ case (xs, ys) of
 | (x1 :: xs, y1 :: ys) =>
   (work(x1, y1); list_z2foreach(xs, ys, work))
 )
+
+(* ****** ****** *)
+
+fun
+list_z2map
+( xs: 'a list
+, ys: 'b list
+, fopr: 'a * 'b -> 'c): 'c list =
+list_map(list_zip2(xs, ys), fopr)
+(*
+case (xs, ys) of
+  (nil, _) => nil
+| (_, nil) => nil
+| (x1 :: xs, y1 :: ys) => fopr(x1, y1) :: list_z2map(xs, ys, fopr)
+*)
+
+(* ****** ****** *)
+
+fun
+list_z2forall
+( xs: 'a list
+, ys: 'b list
+, test: 'a * 'b -> bool): bool =
+list_forall(list_zip2(xs, ys), test)
+
+(* ****** ****** *)
+
+fun
+list_concat
+(xss: 'a list list): 'a list =
+list_foldr
+(xss, [], fn(xs, res) => list_append(xs, res))
+(*
+case xss of
+  nil => nil
+| xs1 :: xss => list_append(xs1, list_concat(xss))
+*)
+
+(* ****** ****** *)
+
+fun
+list_cross2
+(xs: 'a list, ys: 'b list): ('a * 'b) list =
+list_concat
+(list_map(xs, fn x => list_map(ys, fn y => (x, y))))
+
+(* ****** ****** *)
+
+fun
+list_x2map
+( xs: 'a list
+, ys: 'b list
+, fopr: 'a * 'b -> 'c): 'c list =
+list_map(list_cross2(xs, ys), fopr)
+
+(* ****** ****** *)
+
+fun
+list_x2forall
+( xs: 'a list
+, ys: 'b list
+, test: 'a * 'b -> bool): bool =
+list_forall(list_cross2(xs, ys), test)
+
+(* ****** ****** *)
+
+fun
+list_x2exists
+( xs: 'a list
+, ys: 'b list
+, test: 'a * 'b -> bool): bool =
+list_exists(list_cross2(xs, ys), test)
 
 (* ****** ****** *)
 
