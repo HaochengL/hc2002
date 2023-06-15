@@ -34,7 +34,7 @@ fn(xs: int list) => ...
 
 (* end of [CS320-2023-Sum1-quizzes-quiz02-03.sml] *)
 
-fun quiz02_03(xs: int list): int list =
+val quiz02_03 = fn (xs: int list) =>
   let
     fun greater(x: int, ys: int list): bool =
       list_forall(ys, fn(y) => x > y)
