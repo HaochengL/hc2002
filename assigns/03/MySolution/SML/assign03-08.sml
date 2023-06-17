@@ -21,3 +21,33 @@ matrix.
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-assign03-08.sml] *)
+
+fun isStreamEmpty stream =
+  case stream () of
+    strcon_nil => true
+  | _ => false
+
+fun getHead stream = 
+  case stream () of
+    strcon_nil => []
+  | strcon_cons(head, _) => head
+
+fun getTail stream = 
+  case stream () of
+    strcon_nil => raise Empty
+  | strcon_cons(_, tail) => tail
+
+fun stream_ziplst streams = 
+  if List.all isStreamEmpty streams then
+    fn () => strcon_nil
+  else
+    let
+      val heads = List.map getHead streams
+      val tails = List.map getTail streams
+    in
+      fn () => strcon_cons(heads, stream_ziplst tails)
+    end
+
+
+
+

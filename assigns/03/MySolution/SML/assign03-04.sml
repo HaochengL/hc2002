@@ -26,3 +26,35 @@ val the_ln2_stream: real stream = fn() => ...
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-assign03-04.sml] *)
+
+
+(* ****** ****** *)
+
+(* ****** ****** *)
+
+(* ****** ****** *)
+
+(* ****** ****** *)
+fun term(i: int): real = 
+    if i mod 2 = 0 then 1.0 / real(i+1)
+    else ~1.0 / real(i+1)
+
+fun helper(i: int, current_sum: real): real stream = 
+    let 
+        val next_term = term(i)
+        val new_sum = current_sum + next_term
+    in 
+        fn () => strcon_cons(new_sum, helper(i+1, new_sum))
+    end
+
+val the_ln2_stream: real stream = helper(0, 0.0)
+
+
+
+
+
+
+
+
+
+
