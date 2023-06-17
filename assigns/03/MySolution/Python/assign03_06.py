@@ -11,26 +11,32 @@ Solving the N-queen puzzle
 """
 ####################################################
 def solve_N_queen_puzzle(N):
-"""
-######
-A board of size N is a tuple of length N.
-######
-For instance, a tuple (0, 0, 0, 0) stands
-for a board of size 4 (that is, a 4x4 board)
-where there are no queen pieces on the board.
-######
-For instance, a tuple (2, 1, 0, 0) stands
-for a board of size 4 (that is, a 4x4 board)
-where there are two queen pieces; the queen piece
-on the 1st row is on the 2nd column; the queen piece
-on the 2nd row is on the 1st column; the last two rows
-contain no queen pieces.
-######
-This function [solve_N_queen_puzzle] should return
-a stream of ALL the boards of size N that contain N
-queen pieces (one on each row and on each column) such
-that no queen piece on the board can catch any other ones
-on the same board.
-"""
-    raise NotImplementedError
-####################################################
+    def is_safe(board, row, col):
+        # Check if placing a queen at (row, col) is safe
+        for i in range(row):
+            # Check if there is a queen in the same column or diagonals
+            if board[i] == col or \
+               board[i] - i == col - row or \
+               board[i] + i == col + row:
+                return False
+        return True
+
+    def place_queens(board, row):
+        if row == N:
+            # Base case: All queens are placed, yield the board
+            yield board
+        else:
+            for col in range(N):
+                if is_safe(board, row, col):
+                    # Place a queen at (row, col) and continue recursively
+                    new_board = board + (col,)
+                    yield from place_queens(new_board, row + 1)
+
+    # Start with an empty board and generate all valid boards
+    initial_board = ()
+    return place_queens(initial_board, 0)
+
+# Test
+solutions = list(solve_N_queen_puzzle(4))
+for solution in solutions:
+    print(solution)

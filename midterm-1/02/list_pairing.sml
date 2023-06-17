@@ -59,34 +59,34 @@ fun list_pairing (xs: 'a list): ('a * 'a) list * 'a option =
     val ys = list_reverse(xs)
     val lengthxs = list_length(xs)
 
-    fun lenopt (xs: 'a list, counter: int, index: int): 'a option =
+    fun lenopt (xs: 'a list, index: int, acc: int): 'a option =
       case xs of
         nil => NONE
       | x1 :: xs =>
-          if counter = index then SOME(x1)
-          else lenopt(xs, counter + 1, index)
+          if acc = index then SOME(x1)
+          else lenopt(xs, acc + 1, index)
 
-    fun odd (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
-      if counter <> 0 then
+    fun odd (acc: int, xs: 'a list, ys: 'a list): ('a * 'a) list =
+      if acc <> 0 then
         case xs of
           nil => []
         | x1 :: xs =>
             let
               val (y1 :: ys) = ys
             in
-              (x1, y1) :: odd(xs, ys, counter - 2)
+              (x1, y1) :: odd(xs, ys, acc - 2)
             end
       else []
 
-    fun even (xs: 'a list, ys: 'a list, counter: int): ('a * 'a) list =
-      if counter <> 0 then
+    fun even (acc: int, xs: 'a list, ys: 'a list): ('a * 'a) list =
+      if acc <> 0 then
         case xs of
           nil => []
         | x1 :: xs =>
             let
               val (y1 :: ys) = ys
             in
-              (x1, y1) :: even(xs, ys, counter - 2)
+              (x1, y1) :: even(xs, ys, acc - 2)
             end
       else []
 

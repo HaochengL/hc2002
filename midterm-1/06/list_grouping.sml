@@ -57,86 +57,55 @@ val nxs = list_grouping(int1_map_list(N, fn i => N-i))
 (* end of [CS320-2023-Sum1-midterm1-list_grouping.sml] *)
 
 
-fun
-list_mergesort
-(xs: int list): int list =
-let
+fun split xs =
+  let
+    fun split_helper [] = ([], [])
+      | split_helper [x] = ([x], [])
+      | split_helper (x1::x2::xs) =
+          let val (ys, zs) = split_helper xs
+          in  (x1::ys, x2::zs) 
+          end
+  in
+    split_helper xs
+  end;
 
-fun
-split
-(xs: int list): int list * int list =
-(
-case xs of
-  nil => ([], [])
-| x1 :: xs =>
-(
+fun merge (xs, ys) =
   case xs of
-    nil => ([x1], [])
-  | x2 :: xs =>
-    let
-      val
-      (ys, zs) = split(xs)
-    in
-      (x1 :: ys, x2 :: zs)
-    end
-)
-)
+    [] => ys
+  | x::xs' =>
+      (case ys of
+         [] => xs
+       | y::ys' =>
+           if x <= y then x::merge (xs', ys)
+           else y::merge (xs, ys'));
 
-fun merge
-( ys: int list
-, zs: int list): int list =
-(
-case ys of
-  nil => zs
-| y1 :: ys =>
-(
-  case zs of
-    nil => y1 :: ys
-  | z1 :: zs =>
-    if y1 <= z1
-    then y1 :: merge(ys, z1 :: zs)
-    else z1 :: merge(y1 :: ys, zs)
-)
-)
-
-in
-
-case xs of
-  nil => []
-| x1 :: xs =>
-(
+fun mergesort xs =
   case xs of
-    nil => [x1]
-  | x2 :: xs =>
-    let
-      val (ys, zs) = split(xs)
-    in
-      merge(list_mergesort(x1 :: ys), list_mergesort(x2 :: zs))
-    end
-)
+    [] => []
+  | [x] => xs
+  | _ =>
+    let val (xs1, xs2) = split xs
+    in  merge (mergesort xs1, mergesort xs2) 
+    end;
 
-end
+fun count_list xs =
+  let
+    fun count_helper [] n prev = [(n, prev)]
+      | count_helper (x::xs) n prev =
+          if x = prev then count_helper xs (n+1) x
+          else (n, prev)::count_helper xs 1 x
+  in
+    case xs of
+      [] => []
+    | x::xs' => count_helper xs' 1 x
+  end;
 
-
-
-fun list_grouping(xs: int list): (int * int) list =
-let
-    fun countConsecutive([]) = []
-      | countConsecutive(x1::xs) =
-        let
-            fun countHelper([], n, pre) = [(n, pre)]
-              | countHelper(x2::xs2, n, pre) =
-                if x2 = pre then countHelper(xs2, n + 1, x2)
-                else (n, pre) :: countHelper(xs2, 1, x2)
-        in
-            countHelper(xs, 1, x1)
-        end
-
-    val sorted = list_mergesort(xs)
-in
-    countConsecutive(sorted)
-end
-
+fun list_grouping xs =
+  let
+    val sorted = mergesort xs
+  in
+    count_list sorted
+  end;
 
 val xs = list_grouping([1,2])
 val ys = list_grouping([1,2,2,2,1])
