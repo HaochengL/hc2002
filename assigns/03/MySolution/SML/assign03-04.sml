@@ -34,7 +34,7 @@ val the_ln2_stream: real stream = fn() => ...
 
 (* ****** ****** *)
 
-(* ****** ****** *)
+(* ****** ****** *)    
 fun term(i: int): real = 
     if i mod 2 = 0 then 1.0 / real(i+1)
     else ~1.0 / real(i+1)
