@@ -11,6 +11,7 @@ HX-2023-06-12: 20 points
 Solving the N-queen puzzle
 Here is an implementation of the famous 8-queen puzzle:
 https://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/HTML/x631.html
+
 //
 """
 ####################################################

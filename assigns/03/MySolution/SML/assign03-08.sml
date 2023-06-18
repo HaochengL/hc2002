@@ -32,3 +32,15 @@ fun stream_ziplst(fxss) =
 
 
 
+val xs1 =
+list_streamize[[],[],[]]
+val xs2 =
+list_streamize[2,2,2]
+val xs3 =
+list_streamize[3,3,3]
+val fxss =
+stream_ziplst([xs1, xs2, xs3])
+
+val xs = stream_get_at(fxss,0)
+val ys = stream_get_at(fxss,1)
+val zs = stream_get_at(fxss,2)

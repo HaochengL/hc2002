@@ -11,24 +11,21 @@ from mypylib_cls import *
 # to word_neighbors (which is the one for Assign03-02)
 #
 
-def string_to_char_list(string):
-    return list(string)
+def modify_char(string, index, new_char):
+    return string[:index] + new_char + string[index + 1:]
 
 def word_neighbors(word):
+    AB = "abcdefghijklmnopqrstuvwxyz"
     len_word = len(word)
-    letters = string_to_char_list("abcdefghijklmnopqrstuvwxyz")
 
-    def gen_neighbors(i, char):
-        neighbors = []
-        for new_char in letters:
-            if char != new_char:
-                new_word = word[:i] + new_char + word[i+1:]
-                neighbors.append(new_word)
-        return neighbors
+    def n_each(i):
+        return [modify_char(word, k, ch_new) if k == i else word[k] for k, ch_new in enumerate(AB)]
 
-    neighbor_list = []
-    for i, char in enumerate(word):
-        neighbors = gen_neighbors(i, char)
-        neighbor_list.extend(neighbors)
+    raw = []
+    for i in range(len_word):
+        raw.extend(n_each(i))
 
-    return list(filter(lambda s: s != "", neighbor_list))
+    return [w for w in raw if w != word]
+
+
+

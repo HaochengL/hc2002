@@ -74,26 +74,28 @@ word_neighbors = fn(word: string) => ...
 
 (* end of [CS320-2023-Sum1-assign03-02.sml] *)
 
-fun string_to_char_list (str: string): char list =
-  foreach_to_map_list (string_foreach) (str, fn c => c)
+def string_to_char_list(string):
+    return list(string)
 
-fun word_neighbors(word: string): string list =
-  let
-    val len = String.size word
-    val letters = string_to_char_list AB;
+def word_neighbors(word):
+    len_word = len(word)
+    letters = string_to_char_list("AB")
 
-    fun gen_neighbors (i: int, char: char): string list =
-      list_map
-        (letters, 
-         fn new_char =>
-            if char = new_char then ""
-            else String.concat [(String.substring(word, 0, i)),
-                                String.str new_char,
-                                (String.substring(word, i+1, len-i-1))])
-    val neighbor_list = list_concat (string_imap_list(word, gen_neighbors))
-  in
-    list_filter (neighbor_list, fn s => s <> "")
-  end
+    def gen_neighbors(i, char):
+        neighbor_list = []
+        for new_char in letters:
+            if char != new_char:
+                new_word = word[:i] + new_char + word[i+1:]
+                neighbor_list.append(new_word)
+        return neighbor_list
+
+    neighbor_list = []
+    for i, char in enumerate(word):
+        neighbor_list.extend(gen_neighbors(i, char))
+    
+    return [s for s in neighbor_list if s != ""]
+
+
 
 
 
