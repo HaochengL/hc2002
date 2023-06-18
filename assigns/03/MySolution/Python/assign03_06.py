@@ -40,7 +40,9 @@ def solve_N_queen_puzzle(N):
     initial_board = ()
     return place_queens(initial_board, 0)
 
-# Test
-solutions = list(solve_N_queen_puzzle(4))
-for solution in solutions:
+# Test the solution
+theNQueenSols_8 = solve_N_queen_puzzle(8)
+for solution in theNQueenSols_8:
     print(solution)
+
+
