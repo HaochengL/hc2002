@@ -35,19 +35,22 @@ val the_ln2_stream: real stream = fn() => ...
 (* ****** ****** *)
 
 (* ****** ****** *)    
-fun term(i: int): real = 
-    if i mod 2 = 0 then 1.0 / real(i+1)
-    else ~1.0 / real(i+1)
+fun compute_term(index: int): real = 
+    if index mod 2 = 0 then 
+        1.0 / real(index + 1)
+    else 
+        ~1.0 / real(index + 1)
 
-fun helper(i: int, current_sum: real): real stream = 
+fun construct_stream(counter: int, sum: real): real stream = 
     let 
-        val next_term = term(i)
-        val new_sum = current_sum + next_term
+        val next_value = compute_term(counter)
+        val updated_sum = sum + next_value
     in 
-        fn () => strcon_cons(new_sum, helper(i+1, new_sum))
+        fn () => strcon_cons(updated_sum, construct_stream(counter + 1, updated_sum))
     end
 
-val the_ln2_stream: real stream = helper(0, 0.0)
+val the_ln2_stream: real stream = construct_stream(0, 0.0)
+
 
 
 

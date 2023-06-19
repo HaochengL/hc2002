@@ -22,13 +22,31 @@ matrix.
 
 (* end of [CS320-2023-Sum1-assign03-08.sml] *)
 
-fun stream_ziplst(fxss) =
-  let
-    val length = stream_length(list_head(fxss))
-  in
-    stream_tabulate(length, fn i =>
-      list_map(fxss, fn xs => stream_get_at(xs, i)))
-  end
+fun stream_ziplst (xs: 'a stream list): 'a list stream = 
+    fn () =>
+        let
+            val current = list_map(xs, fn x => x())
+        in
+            if list_exists(current, fn strcon => 
+                case strcon of 
+                strcon_nil => true
+              | _ => false
+            )then strcon_nil
 
+            else 
+                let 
+                    val hd = list_map(current, fn strcon => 
+                        case strcon of 
+                        strcon_nil => raise Empty
+                      | strcon_cons (h, _) => h)
 
+                    val tl = list_map(current, fn strcon => 
+                        case strcon of
+                        strcon_nil => raise Empty
+                      | strcon_cons (_, t) => t)
+
+                in
+                    strcon_cons (hd, stream_ziplst(tl))
+                end
+        end
 

@@ -21,13 +21,25 @@ val theNatPairs: (int*int) stream = fn () =>  ...
 
 (* end of [CS320-2023-Sum1-assign03-05.sml] *)
 
-fun
-pair_stream_from (i, j) =
-    if i > j 
-    then fn () => pair_stream_from (0, j + 1) ()
-    else stream_cons((i, j - i), fn () => pair_stream_from(i + 1, j) ())
 
-val theNatPairs: (int*int) stream = pair_stream_from (0, 0) 
+fun create_pair_stream (pair: int*int) = 
+    let 
+        val (i, j) = pair
+    in
+        if i > j then 
+            fn () => create_pair_stream (0, j+1) ()
+        else 
+            stream_cons (
+                (i, j - i), 
+                fn () => create_pair_stream (i+1, j) ()
+            )
+    end
+
+val theNatPairs: unit -> (int*int) strcon = create_pair_stream (0, 0)
+
+
+
+
 
 
 
