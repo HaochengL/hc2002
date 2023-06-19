@@ -11,21 +11,38 @@ from mypylib_cls import *
 # to word_neighbors (which is the one for Assign03-02)
 #
 
-def modify_char(string, index, new_char):
-    return string[:index] + new_char + string[index + 1:]
 
 def word_neighbors(word):
+    worklen = len(word)
     AB = "abcdefghijklmnopqrstuvwxyz"
-    len_word = len(word)
+    return fnlist_concat(
+        string_imap_fnlist(
+            word,
+            lambda i, c: fnlist_concat(
+                string_imap_fnlist(
+                    AB,
+                    lambda _, c1: fnlist_sing(
+                        string_tabulate(worklen, lambda j: word[j] if i != j else c1)
+                    )
+                    if c != c1
+                    else fnlist_nil(),
+                )
+            )
+        )
+    )
 
-    def n_each(i):
-        return [modify_char(word, k, ch_new) if k == i else word[k] for k, ch_new in enumerate(AB)]
+def string_implode(ss):
+    return foreach_to_foldleft(fnlist_foreach)(
+        ss, "", lambda r, s: r + s
+    )
+    
+    
+def fnlist_tabulate(n, f):
+    return fnlist_reverse(
+        int1_foldleft(n, fnlist_nil(), lambda xs, i: fnlist_cons(f(i), xs))
+    )
 
-    raw = []
-    for i in range(len_word):
-        raw.extend(n_each(i))
 
-    return [w for w in raw if w != word]
-
-
+def string_tabulate(n, f):
+    return string_implode(fnlist_tabulate(n, f))
 

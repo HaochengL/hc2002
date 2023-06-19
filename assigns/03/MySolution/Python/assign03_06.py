@@ -14,36 +14,30 @@ https://ats-lang.sourceforge.net/DOCUMENT/INT2PROGINATS/HTML/x631.html
 
 //
 """
-####################################################
 def solve_N_queen_puzzle(N):
     def is_safe(board, row, col):
-        # Check if placing a queen at (row, col) is safe
+        # Check if a queen placed at (row, col) is safe from attacks
         for i in range(row):
-            # Check if there is a queen in the same column or diagonals
-            if board[i] == col or \
-               board[i] - i == col - row or \
-               board[i] + i == col + row:
+            if board[i] == col or board[i] - col == i - row or board[i] - col == row - i:
                 return False
         return True
 
-    def place_queens(board, row):
+    def backtrack(board, row):
+        nonlocal N, solutions
         if row == N:
-            # Base case: All queens are placed, yield the board
-            yield board
+            solutions.append(list(board))
         else:
             for col in range(N):
                 if is_safe(board, row, col):
-                    # Place a queen at (row, col) and continue recursively
-                    new_board = board + (col,)
-                    yield from place_queens(new_board, row + 1)
+                    board[row] = col
+                    backtrack(board, row + 1)
+                    board[row] = -1
 
-    # Start with an empty board and generate all valid boards
-    initial_board = ()
-    return place_queens(initial_board, 0)
+    solutions = []
+    initial_board = [-1] * N
+    backtrack(initial_board, 0)
+    return solutions
 
-# Test the solution
-theNQueenSols_8 = solve_N_queen_puzzle(8)
-for solution in theNQueenSols_8:
-    print(solution)
+
 
 
