@@ -45,3 +45,14 @@ perm_counting_out
 (* ****** ****** *)
 
 (* end of [CS320-2023-Spring-midterm2-perm_counting_out.sml] *)
+
+fun perm_counting_out(xs: int list, k0: int): int list =
+  let
+    fun counting_out(_, [], res) = res
+      | counting_out(k, x::xs, res) = 
+          if k = k0 
+          then counting_out(0, xs, res @ [x])
+          else counting_out(k+1, xs @ [x], res)
+  in
+    counting_out(0, xs, [])
+  end

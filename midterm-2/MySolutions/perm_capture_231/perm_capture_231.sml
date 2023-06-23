@@ -31,3 +31,24 @@ perm_capture_231
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-midterm2-perm_capture_231.sml] *)
+
+fun perm_capture_231(xs: int list): bool =
+    let
+        fun check_231(a, b, c) = c < a andalso a < b
+        fun helper(xs) =
+            case xs of
+                [] => false
+            |   a::xs' =>
+                    let
+                        fun scan([], _) = helper(xs')
+                        |   scan(b::bs, []) = helper(xs')
+                        |   scan(b::bs, c::cs) =
+                            if b > a andalso list_exists(bs, fn c => c < a)
+                            then true
+                            else scan(bs, cs)
+                    in
+                        scan(xs', xs')
+                    end
+    in
+        helper(xs)
+    end

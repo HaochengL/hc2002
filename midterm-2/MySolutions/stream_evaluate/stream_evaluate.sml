@@ -32,3 +32,25 @@ stream_evaluate
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-midterm2-stream_evaluate.sml] *)
+
+fun
+stream_evaluate
+(fxs: real stream, x0: real): real stream =
+let
+  fun
+  helper
+  (fxs: real stream, xpow: real, sum: real): real stream = fn () =>
+  (
+  case fxs() of
+    strcon_nil => strcon_nil
+  | strcon_cons(a, fxs) =>
+    let
+      val new_sum = sum + a * xpow
+    in
+      strcon_cons(new_sum, helper(fxs, xpow * x0, new_sum))
+    end
+  )
+  
+in
+  helper(fxs, 1.0, 0.0)
+end

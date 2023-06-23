@@ -30,3 +30,26 @@ stream_drawdowns
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-midterm2-stream_drawdowns.sml] *)
+
+fun
+aux
+  ( acc: int list
+  , fxs: int stream): int list strcon =
+(
+case fxs() of
+  strcon_nil => strcon_cons(acc, fn () => strcon_nil)
+| strcon_cons(x1, fxs) =>
+  if list_is_nil(acc) orelse x1 <= list_head(acc) then
+    aux(x1::acc, fxs)
+  else
+    strcon_cons(list_reverse(acc), fn () => aux([x1], fxs))
+)
+
+
+fun
+stream_drawdowns(fxs: int stream): int list stream = fn () =>
+(
+case fxs() of
+  strcon_nil => strcon_nil
+| strcon_cons(x1, fxs) => aux([x1], fxs)
+)
