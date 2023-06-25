@@ -21,3 +21,19 @@ theNatPairs_cubesum: (int * int) stream = fn () => ...
 (* ****** ****** *)
 
 (* end of [CS320-2023-Sum1-assign04-02.sml] *)
+
+fun pairs(i: int): (int * int) stream = 
+  stream_tabulate(i+1, fn j => (i, j))
+
+(* Merge two ordered streams *)
+fun mergeStreams(fxs: (int * int) stream, fys: (int * int) stream): (int * int) stream =
+  stream_merge2(fxs, fys, fn ((i1, j1), (i2, j2)) => i1*i1*i1 + j1*j1*j1 < i2*i2*i2 + j2*j2*j2)
+
+val theNatPairs_cubesum: unit -> (int * int) stream = fn () =>
+  let 
+    fun helper(i: int): (int * int) stream =
+      mergeStreams(pairs(i), helper(i+1))
+  in
+    helper(0)
+  end
+

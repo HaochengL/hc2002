@@ -28,5 +28,24 @@ wordle_hint(w1, w2) =
 """
 ########################################################################
 def wordle_hint(w1, w2):
-    raise NotImplementedError
+    hint = []
+    w1_char_counts = {}
+    for c in w1:
+        if c in w1_char_counts:
+            w1_char_counts[c] += 1
+        else:
+            w1_char_counts[c] = 1
+
+    for i, c in enumerate(w2):
+        if c in w1:
+            if c == w1[i] and w1_char_counts[c] > 0:
+                hint.append((1, c))
+                w1_char_counts[c] -= 1
+            elif c != w1[i] and w1_char_counts[c] > 0:
+                hint.append((2, c))
+                w1_char_counts[c] -= 1
+        else:
+            hint.append((0, c))
+    return hint
+
 ########################################################################
